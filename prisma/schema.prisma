@@ -1,0 +1,133 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model User {
+  id             String        @id @default(cuid())
+  username       String        @unique
+  name           String
+  hashedPassword String
+  role           String        @default("STAFF") // ADMIN, MANAGER, STAFF
+  active         Boolean       @default(true)
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+  assignedOrders Order[]       @relation("assignee")
+  createdOrders  Order[]       @relation("creator")
+  comments       Comment[]
+  activityLogs   ActivityLog[]
+}
+
+model Customer {
+  id        String   @id @default(cuid())
+  name      String
+  email     String   @default("")
+  phone     String   @default("")
+  company   String   @default("")
+  address   String   @default("")
+  notes     String   @default("")
+  active    Boolean  @default(true)
+  orders    Order[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Order {
+  id            String        @id @default(cuid())
+  orderNumber   Int           @unique
+  status        String        @default("DRAFT") // DRAFT, IN_PROGRESS, COMPLETED, CANCELLED
+  customerId    String?
+  customer      Customer?     @relation(fields: [customerId], references: [id])
+  customerName  String
+  customerEmail String        @default("")
+  customerPhone String        @default("")
+  notes         String        @default("")
+  assigneeId    String?
+  assignee      User?         @relation("assignee", fields: [assigneeId], references: [id])
+  createdById   String
+  createdBy     User          @relation("creator", fields: [createdById], references: [id])
+  lineItems     LineItem[]
+  comments      Comment[]
+  activityLogs  ActivityLog[]
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+}
+
+model LineItem {
+  id               String          @id @default(cuid())
+  orderId          String
+  order            Order           @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  description      String
+  quantity         Int             @default(1)
+  unitPrice        Float           @default(0)
+  sortOrder        Int             @default(0)
+  productId        String?
+  product          Product?        @relation(fields: [productId], references: [id], onDelete: SetNull)
+  productVariantId String?
+  productVariant   ProductVariant? @relation(fields: [productVariantId], references: [id], onDelete: SetNull)
+}
+
+model Product {
+  id          String           @id @default(cuid())
+  name        String
+  description String           @default("")
+  sku         String           @unique
+  category    String           @default("")
+  basePrice   Float            @default(0)
+  hasVariants Boolean          @default(false)
+  active      Boolean          @default(true)
+  variants    ProductVariant[]
+  lineItems   LineItem[]
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+}
+
+model ProductVariant {
+  id        String     @id @default(cuid())
+  productId String
+  product   Product    @relation(fields: [productId], references: [id], onDelete: Cascade)
+  name      String
+  sku       String     @unique
+  price     Float
+  sortOrder Int        @default(0)
+  active    Boolean    @default(true)
+  lineItems LineItem[]
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+}
+
+model OrderStatus {
+  id        String   @id @default(cuid())
+  key       String   @unique
+  label     String
+  color     String   @default("slate")
+  sortOrder Int      @default(0)
+  isDefault Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Comment {
+  id        String   @id @default(cuid())
+  orderId   String
+  order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  content   String
+  createdAt DateTime @default(now())
+}
+
+model ActivityLog {
+  id        String   @id @default(cuid())
+  orderId   String
+  order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  action    String
+  details   String   @default("")
+  createdAt DateTime @default(now())
+}
