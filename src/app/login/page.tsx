@@ -9,7 +9,6 @@ import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { User, Lock } from "lucide-react"
 import Image from "next/image"
-import logo from "@/assets/logo.png"
 
 export default function LoginPage() {
   const router = useRouter()
