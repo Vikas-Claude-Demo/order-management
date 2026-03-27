@@ -7,7 +7,8 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Sparkles, User, Lock } from "lucide-react"
+import { User, Lock } from "lucide-react"
+import Image from "next/image"
 
 export default function LoginPage() {
   const router = useRouter()
@@ -44,8 +45,14 @@ export default function LoginPage() {
 
       <Card className="w-full max-w-md relative z-10 border-white/10 bg-white/5 backdrop-blur-xl shadow-2xl shadow-indigo-500/10">
         <CardHeader className="text-center pb-2">
-          <div className="mx-auto mb-4 h-16 w-16 rounded-2xl bg-gradient-to-br from-indigo-500 via-purple-500 to-fuchsia-500 flex items-center justify-center shadow-xl shadow-indigo-500/30">
-            <Sparkles className="h-8 w-8 text-white" />
+          <div className="mx-auto mb-4 h-16 w-16 rounded-2xl bg-white/5 flex items-center justify-center shadow-xl shadow-indigo-500/20 overflow-hidden border border-white/10">
+            <Image 
+              src="/logo.png" 
+              alt="OrderFlow Logo" 
+              width={64} 
+              height={64} 
+              className="object-cover"
+            />
           </div>
           <CardTitle className="text-3xl font-bold bg-gradient-to-r from-white to-indigo-200 bg-clip-text text-transparent">
             OrderFlow
