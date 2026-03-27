@@ -270,7 +270,7 @@ export function OrderListClient({
         return String(a.sortKey).localeCompare(String(b.sortKey))
       })
       .map(([key, value]) => ({ key, ...value }))
-  }, [filtered, groupBy])
+  }, [filtered, groupBy, statuses])
 
   return (
     <div className="space-y-6">
